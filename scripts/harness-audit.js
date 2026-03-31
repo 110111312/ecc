@@ -170,7 +170,7 @@ function hasFileWithExtension(rootDir, relativeDir, extensions) {
 
 function detectTargetMode(rootDir) {
   const packageJson = safeParseJson(safeRead(rootDir, 'package.json'));
-  if (packageJson?.name === 'everything-claude-code') {
+  if (packageJson?.name === 'ecc') {
     return 'repo';
   }
 
@@ -189,10 +189,10 @@ function detectTargetMode(rootDir) {
 function findPluginInstall(rootDir) {
   const homeDir = process.env.HOME || '';
   const candidates = [
-    path.join(rootDir, '.claude', 'plugins', 'everything-claude-code', '.claude-plugin', 'plugin.json'),
-    path.join(rootDir, '.claude', 'plugins', 'everything-claude-code', 'plugin.json'),
-    homeDir && path.join(homeDir, '.claude', 'plugins', 'everything-claude-code', '.claude-plugin', 'plugin.json'),
-    homeDir && path.join(homeDir, '.claude', 'plugins', 'everything-claude-code', 'plugin.json'),
+    path.join(rootDir, '.claude', 'plugins', 'ecc', '.claude-plugin', 'plugin.json'),
+    path.join(rootDir, '.claude', 'plugins', 'ecc', 'plugin.json'),
+    homeDir && path.join(homeDir, '.claude', 'plugins', 'ecc', '.claude-plugin', 'plugin.json'),
+    homeDir && path.join(homeDir, '.claude', 'plugins', 'ecc', 'plugin.json'),
   ].filter(Boolean);
 
   return candidates.find(candidate => fs.existsSync(candidate)) || null;
@@ -480,7 +480,7 @@ function getConsumerChecks(rootDir) {
       category: 'Tool Coverage',
       points: 4,
       scopes: ['repo'],
-      path: '~/.claude/plugins/everything-claude-code/',
+      path: '~/.claude/plugins/ecc/',
       description: 'Everything Claude Code is installed for the active user or project',
       pass: Boolean(pluginInstall),
       fix: 'Install the ECC plugin for this user or project before auditing project-specific harness quality.',
