@@ -28,11 +28,11 @@ This skill must be accessible to Claude Code before activation. Two ways to boot
 Before any installation, clone the latest ECC source to `/tmp`:
 
 ```bash
-rm -rf /tmp/everything-claude-code
-git clone https://github.com/affaan-m/everything-claude-code.git /tmp/everything-claude-code
+rm -rf /tmp/ecc
+git clone https://github.com/110111312/ecc.git /tmp/ecc
 ```
 
-Set `ECC_ROOT=/tmp/everything-claude-code` as the source for all subsequent copy operations.
+Set `ECC_ROOT=/tmp/ecc` as the source for all subsequent copy operations.
 
 If the clone fails (network issues, etc.), use `AskUserQuestion` to ask the user to provide a local path to an existing ECC clone.
 
@@ -232,6 +232,57 @@ cp -r $ECC_ROOT/rules/golang/* $TARGET/rules/        # if selected
 
 ---
 
+## Step 3.5: Hooks & Continuous Learning v2 Setup
+
+### Hooks Configuration
+
+Ask: "Configure hooks in settings.json? (Enables PreToolUse/PostToolUse automation)"
+
+If yes, add to `$TARGET/settings.json`:
+
+```json
+{
+  "hooks": {
+    "PreToolUse": [{
+      "matcher": "*",
+      "hooks": [{
+        "type": "command",
+        "command": "$TARGET/skills/continuous-learning-v2/hooks/observe.sh"
+      }]
+    }],
+    "PostToolUse": [{
+      "matcher": "*",
+      "hooks": [{
+        "type": "command",
+        "command": "$TARGET/skills/continuous-learning-v2/hooks/observe.sh"
+      }]
+    }]
+  }
+}
+```
+
+If user-level: use `~/.claude/...` paths
+If project-level: use `${CLAUDE_PLUGIN_ROOT}/...` or absolute paths
+
+### Continuous Learning v2 Setup
+
+If `continuous-learning-v2` was selected, ask: "Initialize homunculus directory structure?"
+
+If yes:
+```bash
+mkdir -p ~/.claude/homunculus/{instincts/{personal,inherited},evolved/{agents,skills,commands},projects}
+```
+
+**Note**: CL-v2 adds these commands:
+- `/instinct-status` - Show learned instincts
+- `/evolve` - Cluster instincts into skills
+- `/instinct-export` - Export instincts
+- `/instinct-import <file>` - Import instincts
+- `/promote [id]` - Promote to global scope
+- `/projects` - List projects with instinct counts
+
+---
+
 ## Step 4: Post-Installation Verification
 
 After installation, perform these automated checks:
@@ -321,7 +372,7 @@ Options:
 Clean up the cloned repository from `/tmp`:
 
 ```bash
-rm -rf /tmp/everything-claude-code
+rm -rf /tmp/ecc
 ```
 
 Then print a summary report:
